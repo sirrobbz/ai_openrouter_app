@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Support Chatbot · OpenRouter + RAG</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                    tech: ['Orbitron', 'sans-serif'],
+                    mono: ['Fira Code', 'monospace'],
+                },
+                colors: {
+                    space: { 950: '#030712', 900: '#0b132b', 800: '#1c2541', 700: '#3a506b', 400: '#5bc0be' },
+                    solar: { 400: '#ff9f1c', 500: '#efefef', 600: '#ff5400' }
+                }
+            }
+        }
+    }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-black">
+<div class="w-full max-w-3xl h-[95vh] glass-panel rounded-3xl flex flex-col overflow-hidden border border-gray-800">
+
+    <!-- ── Header ── -->
+    <div class="px-5 py-4 border-b border-solar-500/20 flex justify-between items-center bg-space-900/50 shrink-0">
+        <div>
+            <h1 class="font-tech text-white text-xl font-bold">
+                AI Support Chatbot
+                <span class="text-solar-400">//</span>
+                OpenRouter + RAG
+            </h1>
+            <p class="text-gray-400 text-sm font-mono mt-1">Ask anything · Upload documents · Chat with your knowledge base</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Doc count badge -->
+            <span id="docBadge" class="hidden text-xs text-space-400 border border-space-400/30 px-2 py-0.5 rounded bg-space-400/10 font-mono">
+                <i class="fa-solid fa-file-lines mr-1"></i><span id="docCount">0</span> doc(s)
+            </span>
+            <span class="text-xs text-solar-400 border border-solar-400/20 px-3 py-1 rounded bg-solar-400/10 font-tech">ONLINE</span>
+        </div>
+    </div>
+
+    <!-- ── Messages ── -->
+    <div id="messages" class="flex-1 overflow-y-auto p-5 space-y-4 custom-scroll bg-space-950/80 text-xs"></div>
+
+    <!-- ── Typing indicator ── -->
+    <div id="typing" class="hidden px-5 py-2 text-gray-400 text-xs font-mono bg-space-950/80 shrink-0">
+        <span class="typing-dot inline-block w-2 h-2 bg-solar-400 rounded-full"></span>
+        <span class="typing-dot inline-block w-2 h-2 bg-solar-400 rounded-full"></span>
+        <span class="typing-dot inline-block w-2 h-2 bg-solar-400 rounded-full"></span>
+        <span class="ml-2">Thinking...</span>
+    </div>
+
+    <!-- ── Upload bar ── -->
+    <div class="px-5 py-3 border-t border-solar-500/10 bg-space-900/40 shrink-0">
+        <div class="flex gap-3 items-center">
+            <label class="flex-1 flex items-center gap-2 cursor-pointer group">
+                <div id="dropZone" class="flex-1 flex items-center gap-2 bg-space-950 border border-space-700 hover:border-solar-400/50 transition-colors rounded-lg px-3 py-2">
+                    <i class="fa-solid fa-paperclip text-gray-500 group-hover:text-solar-400 transition-colors text-sm"></i>
+                    <span id="fileLabel" class="text-gray-500 text-xs font-mono truncate">Attach a file (.pdf .txt .docx .md .csv)</span>
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.docx,.md,.csv" class="hidden">
+                </div>
+            </label>
+            <button id="uploadBtn" class="bg-space-700 hover:bg-space-800 active:scale-95 transition-all text-white px-4 py-2 rounded-lg text-sm font-mono flex items-center gap-2 shrink-0">
+                <i class="fa-solid fa-upload text-solar-400"></i> Upload
+            </button>
+        </div>
+        <div id="uploadStatus" class="text-xs text-gray-500 mt-1.5 font-mono min-h-[16px]"></div>
+
+        <!-- Indexed docs list -->
+        <div id="docList" class="hidden mt-2 flex flex-wrap gap-1.5"></div>
+    </div>
+
+    <!-- ── Chat input ── -->
+    <div class="p-4 flex gap-3 bg-space-900/80 border-t border-gray-800 shrink-0">
+        <input
+            id="input"
+            type="text"
+            placeholder="Ask anything — or about your uploaded documents..."
+            class="flex-1 bg-space-950 border border-space-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-solar-400 transition-colors font-mono text-sm"
+            autocomplete="off"
+        >
+        <button id="sendBtn" class="bg-solar-400 hover:bg-solar-600 active:scale-95 transition-all text-black px-6 py-3 rounded-lg font-bold font-tech tracking-wider text-sm">
+            SEND
+        </button>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
