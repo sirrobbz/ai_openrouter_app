@@ -191,4 +191,7 @@ def chat():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    from werkzeug.serving import run_simple
+    extra_files = [ROOT_DIR / ".env"]
+    app.run(debug=True, port=5000, use_reloader=True, reloader_type="watchdog",
+    extra_files=[str(f) for f in extra_files],)
